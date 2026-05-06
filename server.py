@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 from tortoise.contrib.fastapi import register_tortoise
 
 from Controller.UserController import user_router
+from Controller.LinkController import link_router
 
 load_dotenv()
 app = FastAPI()
@@ -17,6 +18,7 @@ register_tortoise(
 )
 
 app.include_router(user_router)
+app.include_router(link_router)
 
 @app.get("/")
 async def root():
