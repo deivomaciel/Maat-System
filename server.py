@@ -1,17 +1,23 @@
-from DB.Database import Database
-
-from Repository.UserRepository import UserRepository
-from Repository.LinkRepository import LinkRepository
-
-import asyncio
+from fastapi import FastAPI
 from os import getenv
 from dotenv import load_dotenv
+from tortoise.contrib.fastapi import register_tortoise
+
+from Controller.UserController import user_router
 
 load_dotenv()
+app = FastAPI()
 
-database = Database()
+register_tortoise(
+    app,
+    db_url=getenv('DATABASE_URL'),
+    modules={'models': ['Model.UserModel', 'Model.LinkModel', 'Model.RatingModel']},
+    generate_schemas=True,
+    add_exception_handlers=True,
+)
 
-async def start():
-    await database.connect(getenv('DATABASE_URL'))
+app.include_router(user_router)
 
-asyncio.run(start())
+@app.get("/")
+async def root():
+    return {"message": "API rodando 🚀"}

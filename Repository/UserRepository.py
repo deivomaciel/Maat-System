@@ -15,12 +15,20 @@ class UserRepository():
 
         return user
     
-    async def updateUserInfo(self, fields: list, new_value: str, id: int):
+    async def updateUserInfo(self, field: str, new_value: str, id: int):
         user = await User.get_or_none(id=id)
 
         if user:
-            for field in fields:
-                setattr(user, field, new_value)
+            match field:
+                case 'name':
+                    setattr(user, 'name', new_value)
+
+                case 'password':
+                    setattr(user, 'password', new_value)
+
+                case _:
+                    return None
+                
 
             await user.save()
 
