@@ -1,0 +1,146 @@
+{% extends "base.html" %}
+{% block title %}{{ link.name }} — Maat{% endblock %}
+
+{% block body %}
+<div class="app-layout">
+
+  <!-- Header -->
+  <header class="app-header">
+    <div class="container">
+      <div class="app-header-inner">
+        <a href="/dashboard" class="logo">Maat</a>
+        <div class="user-menu">
+          <div class="user-avatar">{{ user.name[0]|upper }}</div>
+          <span class="user-name">{{ user.name }}</span>
+          <a href="/profile" class="btn btn-ghost btn-sm">Perfil</a>
+          <a href="/logout"  class="btn btn-muted  btn-sm">Sair</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main -->
+  <main class="app-main">
+    <div class="container">
+
+      <a href="/dashboard" class="back-link">← Voltar ao painel</a>
+
+      <!-- Evaluation hero -->
+      <div class="eval-hero">
+        <div class="eval-hero-left">
+          <h2>{{ link.name }}</h2>
+          <p>{{ link.total }} resposta{{ 's' if link.total != 1 else '' }} recebida{{ 's' if link.total != 1 else '' }}</p>
+        </div>
+        <div class="eval-actions">
+          <button class="btn btn-ghost btn-sm" onclick="openModal('renameModal')">✏️ Renomear</button>
+          <button class="btn btn-danger btn-sm" onclick="openModal('deleteModal')">🗑 Excluir</button>
+        </div>
+      </div>
+
+      <!-- Rating stats -->
+      {% set total = link.total if link.total > 0 else 1 %}
+      <div class="eval-stats">
+        <div class="eval-stat-card">
+          <div class="eval-stat-emoji">📊</div>
+          <div class="eval-stat-val">{{ link.total }}</div>
+          <div class="eval-stat-lbl">Total</div>
+        </div>
+        <div class="eval-stat-card">
+          <div class="eval-stat-emoji">😞</div>
+          <div class="eval-stat-val bad-col">{{ link.bad }}</div>
+          <div class="eval-stat-lbl">Ruim</div>
+        </div>
+        <div class="eval-stat-card">
+          <div class="eval-stat-emoji">😊</div>
+          <div class="eval-stat-val good-col">{{ link.good }}</div>
+          <div class="eval-stat-lbl">Bom</div>
+        </div>
+        <div class="eval-stat-card">
+          <div class="eval-stat-emoji">🤩</div>
+          <div class="eval-stat-val great-col">{{ link.great }}</div>
+          <div class="eval-stat-lbl">Ótimo</div>
+        </div>
+      </div>
+
+      <!-- Links to copy -->
+      <div class="links-section">
+        <div class="links-section-title">🔗 Links para compartilhar</div>
+        <p style="margin-bottom:20px;font-size:.875rem">
+          Copie os links abaixo e insira-os no seu template de e-mail. Quando o cliente clicar, a avaliação é registrada automaticamente.
+        </p>
+        <div class="link-cards">
+
+          <!-- Bad -->
+          <div class="link-card bad">
+            <div class="link-emoji">😞</div>
+            <div class="link-label">Ruim</div>
+            <div class="link-url" id="url-bad">{{ base_url }}/rate/{{ link.id }}/bad</div>
+            <button class="btn-copy" onclick="copyLink('{{ base_url }}/rate/{{ link.id }}/bad', this)">
+              📋 Copiar link
+            </button>
+          </div>
+
+          <!-- Good -->
+          <div class="link-card good">
+            <div class="link-emoji">😊</div>
+            <div class="link-label">Bom</div>
+            <div class="link-url" id="url-good">{{ base_url }}/rate/{{ link.id }}/good</div>
+            <button class="btn-copy" onclick="copyLink('{{ base_url }}/rate/{{ link.id }}/good', this)">
+              📋 Copiar link
+            </button>
+          </div>
+
+          <!-- Great -->
+          <div class="link-card great">
+            <div class="link-emoji">🤩</div>
+            <div class="link-label">Ótimo</div>
+            <div class="link-url" id="url-great">{{ base_url }}/rate/{{ link.id }}/great</div>
+            <button class="btn-copy" onclick="copyLink('{{ base_url }}/rate/{{ link.id }}/great', this)">
+              📋 Copiar link
+            </button>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<!-- Modal: rename -->
+<div class="modal-overlay" id="renameModal">
+  <div class="modal">
+    <div class="modal-title">Renomear avaliação</div>
+    <div class="modal-desc">Altere o nome desta avaliação no seu painel.</div>
+    <form class="modal-form" method="post" action="/evaluation/{{ link.id }}/rename">
+      <div class="form-group">
+        <label class="form-label">Novo nome</label>
+        <input class="form-input" type="text" name="name"
+               value="{{ link.name }}" required>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-ghost btn-sm" onclick="closeModal('renameModal')">Cancelar</button>
+        <button type="submit" class="btn btn-primary btn-sm">Salvar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Modal: delete -->
+<div class="modal-overlay" id="deleteModal">
+  <div class="modal">
+    <div class="modal-title">Excluir avaliação</div>
+    <div class="modal-desc">
+      Tem certeza que deseja excluir <strong>{{ link.name }}</strong>?
+      Todos os dados de avaliação serão perdidos e esta ação não pode ser desfeita.
+    </div>
+    <div class="modal-actions">
+      <button type="button" class="btn btn-ghost btn-sm" onclick="closeModal('deleteModal')">Cancelar</button>
+      <form method="post" action="/evaluation/{{ link.id }}/delete" style="display:inline">
+        <button type="submit" class="btn btn-danger btn-sm">Sim, excluir</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

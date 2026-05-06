@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}Criar conta — Maat{% endblock %}
+
+{% block body %}
+<div class="auth-page">
+  <div class="auth-card">
+
+    <div class="auth-logo">
+      <a href="/" class="logo">Maat</a>
+    </div>
+
+    <h1>Crie sua conta</h1>
+    <p>Comece a coletar avaliações em minutos, gratuitamente.</p>
+
+    {% if error %}
+    <div class="alert alert-error" style="margin-bottom:16px">{{ error }}</div>
+    {% endif %}
+
+    <form class="auth-form" method="post" action="/register">
+      <div class="form-group">
+        <label class="form-label" for="name">Nome completo</label>
+        <input class="form-input" type="text" id="name" name="name"
+               placeholder="Seu nome" required autocomplete="name">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="email">E-mail</label>
+        <input class="form-input" type="email" id="email" name="email"
+               placeholder="seu@email.com" required autocomplete="email">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="password">Senha</label>
+        <input class="form-input" type="password" id="password" name="password"
+               placeholder="Mín. 6 caracteres" required minlength="6" autocomplete="new-password">
+        <span class="form-hint">Use uma senha que você consiga lembrar.</span>
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-full">Criar conta grátis</button>
+    </form>
+
+    <div class="auth-footer">
+      Já tem uma conta? <a href="/login">Entrar</a>
+    </div>
+
+  </div>
+</div>
+{% endblock %}

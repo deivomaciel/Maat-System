@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+{% block title %}Painel — Maat{% endblock %}
+
+{% block body %}
+<div class="app-layout">
+
+  <!-- Header -->
+  <header class="app-header">
+    <div class="container">
+      <div class="app-header-inner">
+        <a href="/dashboard" class="logo">Maat</a>
+        <div class="user-menu">
+          <div class="user-avatar">{{ user.name[0]|upper }}</div>
+          <span class="user-name">{{ user.name }}</span>
+          <a href="/profile" class="btn btn-ghost btn-sm">Perfil</a>
+          <a href="/logout"  class="btn btn-muted  btn-sm">Sair</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main -->
+  <main class="app-main">
+    <div class="container">
+
+      <!-- Page header -->
+      <div class="page-header">
+        <div>
+          <div class="page-title">Suas avaliações</div>
+          <div class="page-subtitle">Gerencie e acompanhe o feedback dos seus clientes.</div>
+        </div>
+        <button class="btn btn-primary" onclick="openModal('createModal')">
+          + Nova avaliação
+        </button>
+      </div>
+
+      <!-- Stats -->
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="stat-label">Avaliações criadas</div>
+          <div class="stat-value primary">{{ stats.total_links }}</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Total de respostas</div>
+          <div class="stat-value">{{ stats.total_responses }}</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Taxa de satisfação</div>
+          <div class="stat-value success">{{ stats.satisfaction }}%</div>
+        </div>
+      </div>
+
+      <!-- Evaluations -->
+      {% if links %}
+      <div class="evaluations-grid">
+        {% for link in links %}
+        {% set total = link.total if link.total > 0 else 1 %}
+        <a href="/evaluation/{{ link.id }}" class="eval-card">
+          <div class="eval-card-head">
+            <div class="eval-card-name">{{ link.name }}</div>
+            <div class="eval-card-meta">{{ link.total }} resposta{{ 's' if link.total != 1 else '' }}</div>
+          </div>
+          <div class="eval-card-body">
+            <div class="ratings-mini">
+              <div class="rating-row">
+                <span class="rating-emoji">😞</span>
+                <div class="bar-wrap">
+                  <div class="bar-fill bad" data-width="{{ (link.bad / total * 100)|round|int }}"></div>
+                </div>
+                <span class="rating-cnt">{{ link.bad }}</span>
+              </div>
+              <div class="rating-row">
+                <span class="rating-emoji">😊</span>
+                <div class="bar-wrap">
+                  <div class="bar-fill good" data-width="{{ (link.good / total * 100)|round|int }}"></div>
+                </div>
+                <span class="rating-cnt">{{ link.good }}</span>
+              </div>
+              <div class="rating-row">
+                <span class="rating-emoji">🤩</span>
+                <div class="bar-wrap">
+                  <div class="bar-fill great" data-width="{{ (link.great / total * 100)|round|int }}"></div>
+                </div>
+                <span class="rating-cnt">{{ link.great }}</span>
+              </div>
+            </div>
+          </div>
+        </a>
+        {% endfor %}
+      </div>
+
+      {% else %}
+      <div class="empty-state">
+        <div class="empty-icon">📋</div>
+        <h3>Nenhuma avaliação ainda</h3>
+        <p>Crie sua primeira avaliação e comece a coletar feedback dos seus clientes agora mesmo.</p>
+        <button class="btn btn-primary" onclick="openModal('createModal')">+ Criar primeira avaliação</button>
+      </div>
+      {% endif %}
+
+    </div>
+  </main>
+
+</div>
+
+<!-- Modal: criar avaliação -->
+<div class="modal-overlay" id="createModal">
+  <div class="modal">
+    <div class="modal-title">Nova avaliação</div>
+    <div class="modal-desc">Dê um nome para identificar esta avaliação no seu painel.</div>
+    <form class="modal-form" method="post" action="/dashboard/create">
+      <div class="form-group">
+        <label class="form-label" for="evalName">Nome da avaliação</label>
+        <input class="form-input" type="text" id="evalName" name="name"
+               placeholder="ex: Suporte ao Cliente — Maio" required>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-ghost btn-sm" onclick="closeModal('createModal')">Cancelar</button>
+        <button type="submit" class="btn btn-primary btn-sm">Criar avaliação</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+{% endblock %}

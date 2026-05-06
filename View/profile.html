@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+{% block title %}Meu perfil — Maat{% endblock %}
+
+{% block body %}
+<div class="app-layout">
+
+  <!-- Header -->
+  <header class="app-header">
+    <div class="container">
+      <div class="app-header-inner">
+        <a href="/dashboard" class="logo">Maat</a>
+        <div class="user-menu">
+          <div class="user-avatar">{{ user.name[0]|upper }}</div>
+          <span class="user-name">{{ user.name }}</span>
+          <a href="/dashboard" class="btn btn-ghost btn-sm">Painel</a>
+          <a href="/logout"    class="btn btn-muted  btn-sm">Sair</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main -->
+  <main class="app-main">
+    <div class="container">
+
+      <div class="page-header">
+        <div>
+          <div class="page-title">Meu perfil</div>
+          <div class="page-subtitle">Gerencie suas informações de conta.</div>
+        </div>
+      </div>
+
+      <div class="profile-grid">
+
+        <!-- Update name -->
+        <div class="profile-card">
+          <h3>Alterar nome</h3>
+          <form method="post" action="/profile/update-name">
+            <div class="form-group">
+              <label class="form-label">Nome atual</label>
+              <input class="form-input" type="text" name="name"
+                     value="{{ user.name }}" required placeholder="Seu nome completo">
+            </div>
+            <button type="submit" class="btn btn-primary btn-sm">Salvar nome</button>
+          </form>
+        </div>
+
+        <!-- Update password -->
+        <div class="profile-card">
+          <h3>Alterar senha</h3>
+          <form method="post" action="/profile/update-password">
+            <div class="form-group">
+              <label class="form-label">Nova senha</label>
+              <input class="form-input" type="password" name="password"
+                     placeholder="Nova senha" required minlength="6">
+            </div>
+            <div class="form-group">
+              <label class="form-label">E-mail da conta</label>
+              <input class="form-input" type="text" value="{{ user.email }}" disabled
+                     style="opacity:.6;cursor:not-allowed">
+              <span class="form-hint">O e-mail não pode ser alterado.</span>
+            </div>
+            <button type="submit" class="btn btn-outline btn-sm">Atualizar senha</button>
+          </form>
+        </div>
+
+        <!-- Account info -->
+        <div class="profile-card">
+          <h3>Informações da conta</h3>
+          <div style="display:flex;flex-direction:column;gap:16px">
+            <div>
+              <div class="form-label">Nome</div>
+              <div style="font-size:.9rem;margin-top:4px;color:var(--text-secondary)">{{ user.name }}</div>
+            </div>
+            <div>
+              <div class="form-label">E-mail</div>
+              <div style="font-size:.9rem;margin-top:4px;color:var(--text-secondary)">{{ user.email }}</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Danger zone -->
+        <div class="profile-card danger-zone">
+          <h3>Zona de perigo</h3>
+          <p style="font-size:.875rem;margin-bottom:20px">
+            Ao excluir sua conta, todos os seus dados e avaliações serão permanentemente removidos.
+            Esta ação não pode ser desfeita.
+          </p>
+          <button class="btn btn-danger btn-sm" onclick="openModal('deleteAccountModal')">
+            Excluir minha conta
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- Modal: delete account -->
+<div class="modal-overlay" id="deleteAccountModal">
+  <div class="modal">
+    <div class="modal-title">Excluir conta</div>
+    <div class="modal-desc">
+      Tem certeza? Todas as suas avaliações e dados serão permanentemente excluídos.
+      Isso <strong>não pode ser desfeito</strong>.
+    </div>
+    <div class="modal-actions">
+      <button type="button" class="btn btn-ghost btn-sm" onclick="closeModal('deleteAccountModal')">Cancelar</button>
+      <form method="post" action="/profile/delete" style="display:inline">
+        <button type="submit" class="btn btn-danger btn-sm">Sim, excluir tudo</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
