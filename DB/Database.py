@@ -7,7 +7,7 @@ class Database:
     async def connect(self, url_connection: str):
         self.__connection = await Tortoise.init(
             db_url=url_connection, 
-            modules={'models': ['Model.UserModel', 'Model.LinkModel']},
+            modules={'models': ['Model.UserModel', 'Model.LinkModel', 'Model.RatingModel']},
         )
 
         await Tortoise.generate_schemas()

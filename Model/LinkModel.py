@@ -3,7 +3,9 @@ from tortoise import models, fields
 class Link(models.Model):
     id = fields.IntField(pk=True)
     name = fields.CharField(max_length=255, null=False)
-    token = fields.CharField(max_length=255, null=False, unique=True)
+    # token = fields.CharField(max_length=255, null=False, unique=True)
+
+    ratings = fields.ReverseRelation['ratings']
 
     user = fields.ForeignKeyField(
         'models.User',

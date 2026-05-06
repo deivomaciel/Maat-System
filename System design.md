@@ -11,3 +11,5 @@ Entitys:
 - User - id, name, email, password
 - link - id, id_user, name, token
 - rated_link - id, id_link, bad, good, great
+
+https://maat-system/rate/{jwt}/{user_id}/{link_id}/{rate_code}
