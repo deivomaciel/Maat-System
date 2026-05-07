@@ -1,8 +1,12 @@
-from fastapi import APIRouter, status, HTTPException
+from fastapi import APIRouter, Request, status, HTTPException
+from fastapi.responses import HTMLResponse
+from fastapi.templating import Jinja2Templates
+from pathlib import Path
 from Schemas.LinkSchema import LinkCreate, LinkUpdateName, LinkUpdateRating
 from Repository.LinkRepository import LinkRepository
 
 link_router = APIRouter(prefix='/link', tags=['Link'])
+views = Jinja2Templates(directory=str(Path(__file__).parent.parent / 'View'))
 
 @link_router.post('/create', status_code=status.HTTP_201_CREATED)
 async def create_link(link: LinkCreate):
@@ -32,13 +36,15 @@ async def update_name(link: LinkUpdateName):
             detail='Internal server error. Try again later.'
         )
     
-@link_router.get('/rating/{link_id}/{rating}', status_code=status.HTTP_200_OK)
-async def update_name(link_id: int, rating: str):
+@link_router.get('/rating/{link_id}/{rating}', response_class=HTMLResponse)
+async def register_rating(request: Request, link_id: int, rating: str):
     try:
         await LinkRepository().updateLinkRating(link_id, rating)
-        return {
-            "message": "ok"
-        }
+        return views.TemplateResponse(
+            request=request,
+            name='RatingView.html',
+            context={'rating': rating}
+        )
 
     except Exception as err:
         print(err)

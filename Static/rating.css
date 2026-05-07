@@ -1,0 +1,171 @@
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+    --font: 'Inter', system-ui, -apple-system, sans-serif;
+    --radius: 20px;
+    --shadow-lg: 0 12px 48px rgba(15, 23, 42, 0.14);
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+    font-family: var(--font);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* ── THEMES ── */
+.rating-body--bad {
+    --accent: #DC2626;
+    --accent-light: #FEF2F2;
+    --accent-mid: #FECACA;
+    background: #FFF5F5;
+}
+.rating-body--good {
+    --accent: #D97706;
+    --accent-light: #FFFBEB;
+    --accent-mid: #FDE68A;
+    background: #FFFDF0;
+}
+.rating-body--great {
+    --accent: #16A34A;
+    --accent-light: #F0FDF4;
+    --accent-mid: #BBF7D0;
+    background: #F2FFF6;
+}
+
+/* ── BG BLOBS ── */
+.rating-bg { position: fixed; inset: 0; pointer-events: none; overflow: hidden; }
+.rating-blob {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.3;
+    background: var(--accent);
+}
+.rating-blob--1 { width: 500px; height: 500px; top: -200px; left: -150px; }
+.rating-blob--2 { width: 400px; height: 400px; bottom: -150px; right: -100px; }
+
+/* ── MAIN ── */
+.rating-main {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    padding: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+}
+
+/* ── CARD ── */
+.rating-card {
+    background: #fff;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-lg);
+    padding: 48px 40px;
+    width: 100%;
+    max-width: 440px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 28px;
+    animation: cardIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+@keyframes cardIn {
+    from { opacity: 0; transform: scale(0.92) translateY(20px); }
+    to   { opacity: 1; transform: scale(1)    translateY(0); }
+}
+
+/* ── BRAND ── */
+.rating-brand {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1rem;
+    font-weight: 700;
+    color: #0F172A;
+    text-decoration: none;
+    opacity: 0.7;
+    transition: opacity 0.15s;
+}
+.rating-brand:hover { opacity: 1; }
+
+/* ── ICON ── */
+.rating-icon-wrap { animation: iconPop 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.15s both; }
+@keyframes iconPop {
+    from { opacity: 0; transform: scale(0.5); }
+    to   { opacity: 1; transform: scale(1); }
+}
+.rating-icon {
+    width: 96px; height: 96px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--accent-light);
+    color: var(--accent);
+    border: 2px solid var(--accent-mid);
+}
+
+/* ── CONTENT ── */
+.rating-content {
+    text-align: center;
+    animation: fadeUp 0.4s ease 0.25s both;
+}
+@keyframes fadeUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+.rating-title {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #0F172A;
+    letter-spacing: -0.02em;
+    margin-bottom: 10px;
+    line-height: 1.2;
+}
+.rating-subtitle {
+    font-size: 0.925rem;
+    color: #64748B;
+    line-height: 1.7;
+    max-width: 320px;
+    margin: 0 auto;
+}
+
+/* ── BADGE ── */
+.rating-badge {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 16px;
+    background: var(--accent-light);
+    border: 1px solid var(--accent-mid);
+    border-radius: 100px;
+    animation: fadeUp 0.4s ease 0.35s both;
+}
+.badge {
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 100px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+.badge--bad   { background: #FEE2E2; color: #DC2626; }
+.badge--good  { background: #FEF3C7; color: #D97706; }
+.badge--great { background: #DCFCE7; color: #16A34A; }
+.badge-label {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: #64748B;
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 480px) {
+    .rating-card { padding: 36px 24px; gap: 22px; }
+    .rating-title { font-size: 1.25rem; }
+}
