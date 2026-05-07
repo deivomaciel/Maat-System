@@ -47,3 +47,31 @@ async def update_name(link_id: int, rating: str):
             status_code=500,
             detail='Internal server error. Try again later.'
         )
+    
+@link_router.get('/all/{user_id}', status_code=status.HTTP_200_OK)
+async def get_link_by_user(user_id: int):
+    try:
+        links = await LinkRepository().getLinksByUser(user_id)
+        return links
+
+    except Exception as err:
+        print(err)
+
+        raise HTTPException(
+            status_code=500,
+            detail='Internal server error. Try again later.'
+        )
+    
+@link_router.get('/get-rating/{link_id}', status_code=status.HTTP_200_OK)
+async def get_link_rating(link_id: int):
+    try:
+        rating = await LinkRepository().getLinkRating(link_id)
+        return rating
+
+    except Exception as err:
+        print(err)
+
+        raise HTTPException(
+            status_code=500,
+            detail='Internal server error. Try again later.'
+        )

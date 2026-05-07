@@ -1,7 +1,7 @@
 from fastapi import APIRouter, status, HTTPException
 from Repository.UserRepository import UserRepository
-from Schemas.UserSchema import UserCreate, UserUpdate, UserDelete
-from tortoise.exceptions import IntegrityError
+from Schemas.UserSchema import UserCreate, UserUpdate, UserDelete, UserLogin
+from tortoise.exceptions import IntegrityError, DoesNotExist
 
 user_router = APIRouter(prefix='/user', tags=['User'])
 
@@ -57,3 +57,25 @@ async def delete_user(user: UserDelete):
             detail='Internal server error. Try again later.'
         )
 
+@user_router.post('/login', status_code=status.HTTP_202_ACCEPTED)
+async def login(user: UserLogin):
+    try:
+        user_found = await UserRepository().userLogin(user.email, user.password)
+
+        if not user_found:
+            raise DoesNotExist('Email or password invalid.')
+
+        return user_found
+
+    except DoesNotExist as exc:
+        raise HTTPException(
+            status_code=400,
+            detail='Email or password invalid.',
+        )
+
+    except Exception as err:
+        print(err)
+        raise HTTPException(
+            status_code=500,
+            detail='Internal server error. Try again later.'
+        )

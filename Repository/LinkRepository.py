@@ -54,5 +54,12 @@ class LinkRepository():
                 return False
 
         await link_rating.refresh_from_db()
-
         return link_rating
+    
+    async def getLinksByUser(self, user_id: int):
+        links = await Link.filter(user_id=user_id).all()
+        return links
+    
+    async def getLinkRating(self, link_id: int):
+        return await Rating.get_or_none(link_id=link_id)
+
