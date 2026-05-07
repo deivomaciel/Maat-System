@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}Entrar — Maat{% endblock %}
+
+{% block body %}
+<div class="auth-page">
+  <div class="auth-card">
+
+    <div class="auth-logo">
+      <a href="/" class="logo">Maat</a>
+    </div>
+
+    <h1>Bem-vindo de volta</h1>
+    <p>Entre na sua conta para acessar o painel.</p>
+
+    {% if error %}
+    <div class="alert alert-error" style="margin-bottom:16px">{{ error }}</div>
+    {% endif %}
+
+    <form class="auth-form" method="post" action="/login">
+      <div class="form-group">
+        <label class="form-label" for="email">E-mail</label>
+        <input class="form-input" type="email" id="email" name="email"
+               placeholder="seu@email.com" required autocomplete="email">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="password">Senha</label>
+        <input class="form-input" type="password" id="password" name="password"
+               placeholder="••••••••" required autocomplete="current-password">
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-full">Entrar</button>
+    </form>
+
+    <div class="auth-footer">
+      Não tem conta? <a href="/register">Cadastre-se grátis</a>
+    </div>
+
+  </div>
+</div>
+{% endblock %}

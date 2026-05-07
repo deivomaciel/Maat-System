@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Obrigado pela avaliação — Maat{% endblock %}
+
+{% block body %}
+
+{% if rating == "bad" %}
+  {% set emoji = "😞" %}
+  {% set heading = "Lamentamos pela experiência" %}
+  {% set message = "Seu feedback é muito importante para nós. Trabalharemos para melhorar e oferecer um serviço à altura das suas expectativas." %}
+{% elif rating == "good" %}
+  {% set emoji = "😊" %}
+  {% set heading = "Que bom que gostou!" %}
+  {% set message = "Agradecemos por compartilhar sua opinião. Estamos sempre buscando oferecer ainda mais qualidade." %}
+{% else %}
+  {% set emoji = "🤩" %}
+  {% set heading = "Fico feliz com o seu feedback!" %}
+  {% set message = "Sua avaliação nos motiva a continuar entregando o melhor. Muito obrigado por confiar em nosso serviço!" %}
+{% endif %}
+
+<div class="rate-page">
+  <div class="rate-card {{ rating }}">
+    <div class="rate-emoji">{{ emoji }}</div>
+    <div class="rate-divider"></div>
+    <h1>{{ heading }}</h1>
+    <p>{{ message }}</p>
+    <div class="rate-powered">
+      Avaliação registrada com sucesso &nbsp;·&nbsp;
+      Powered by <a href="/">Maat</a>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
