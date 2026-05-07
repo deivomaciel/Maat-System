@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard — Maat</title>
+    <link rel="stylesheet" href="/Static/home.css">
+    <link rel="stylesheet" href="/Static/dashboard.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body class="dash-body">
+
+    <!-- NAV -->
+    <header class="nav nav--dash">
+        <div class="nav__inner">
+            <a href="/" class="nav__logo">
+                <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+                    <rect width="28" height="28" rx="8" fill="#4F46E5"/>
+                    <path d="M7 14c0-3.866 3.134-7 7-7s7 3.134 7 7-3.134 7-7 7-7-3.134-7-7z" fill="white" opacity=".3"/>
+                    <path d="M11 14l2 2 4-4" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <span>MaatS</span>
+            </a>
+
+            <nav class="dash-tabs" role="tablist">
+                <button class="dash-tab dash-tab--active" id="tabLinksBtn" role="tab" onclick="switchTab('links')">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                        <rect x="1" y="1" width="14" height="14" rx="3" stroke="currentColor" stroke-width="1.5"/>
+                        <path d="M4 5h8M4 8h8M4 11h5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                    </svg>
+                    Avaliações
+                </button>
+                <button class="dash-tab" id="tabProfileBtn" role="tab" onclick="switchTab('profile')">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                        <circle cx="8" cy="5" r="3" stroke="currentColor" stroke-width="1.5"/>
+                        <path d="M2 14c0-3.314 2.686-6 6-6s6 2.686 6 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                    </svg>
+                    Perfil
+                </button>
+            </nav>
+
+            <div class="nav__user">
+                <div class="user-avatar" id="userAvatar"></div>
+                <span class="user-name" id="userName"></span>
+                <button class="btn-logout" onclick="logout()" title="Sair">
+                    <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                        <path d="M7 16H3a1 1 0 01-1-1V3a1 1 0 011-1h4M12 13l4-4-4-4M16 9H6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <span>Sair</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN -->
+    <main class="dash-main">
+
+        <!-- AVALIAÇÕES -->
+        <section class="dash-panel" id="panelLinks" role="tabpanel">
+            <div class="dash-toolbar">
+                <div class="dash-toolbar__left">
+                    <h1 class="dash-title">Minhas Avaliações</h1>
+                    <span class="count-badge" id="linksCount">0</span>
+                </div>
+                <button class="btn btn--primary" onclick="openModal('modalCreate')">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                        <path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                    Nova avaliação
+                </button>
+            </div>
+
+            <div class="links-grid" id="linksGrid"></div>
+
+            <div class="empty-state" id="emptyState" style="display:none">
+                <div class="empty-state__icon">
+                    <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+                        <rect x="4" y="8" width="40" height="32" rx="6" stroke="#CBD5E1" stroke-width="2"/>
+                        <path d="M4 18h40" stroke="#CBD5E1" stroke-width="2"/>
+                        <path d="M14 28h10M14 33h6" stroke="#CBD5E1" stroke-width="2" stroke-linecap="round"/>
+                        <circle cx="36" cy="30" r="8" fill="#EEF2FF" stroke="#4F46E5" stroke-width="2"/>
+                        <path d="M36 27v6M33 30h6" stroke="#4F46E5" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                </div>
+                <h3 class="empty-state__title">Nenhuma avaliação ainda</h3>
+                <p class="empty-state__desc">Crie sua primeira avaliação e comece a coletar o feedback dos seus clientes.</p>
+                <button class="btn btn--primary" onclick="openModal('modalCreate')">Criar primeira avaliação</button>
+            </div>
+
+            <div class="loading-state" id="loadingState">
+                <div class="loading-spinner"></div>
+                <span>Carregando avaliações...</span>
+            </div>
+        </section>
+
+        <!-- PERFIL -->
+        <section class="dash-panel dash-panel--hidden" id="panelProfile" role="tabpanel">
+            <div class="dash-toolbar">
+                <div class="dash-toolbar__left">
+                    <h1 class="dash-title">Meu Perfil</h1>
+                </div>
+            </div>
+
+            <div class="profile-grid">
+                <!-- Editar nome -->
+                <div class="profile-card">
+                    <div class="profile-card__header">
+                        <div class="profile-card__icon profile-card__icon--blue">
+                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                                <circle cx="10" cy="7" r="3.5" stroke="currentColor" stroke-width="1.5"/>
+                                <path d="M3 18c0-3.866 3.134-7 7-7s7 3.134 7 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <h2 class="profile-card__title">Nome</h2>
+                            <p class="profile-card__subtitle">Atualize como você é identificado</p>
+                        </div>
+                    </div>
+                    <form class="profile-form" id="nameForm" novalidate>
+                        <div class="form-group" id="profileNameGroup">
+                            <label class="form-label" for="profileName">Novo nome</label>
+                            <input class="form-input form-input--plain" type="text" id="profileName" placeholder="Seu nome completo" required>
+                            <span class="form-error" id="profileNameError"></span>
+                        </div>
+                        <div class="form-alert" id="nameAlert" style="display:none"></div>
+                        <button type="submit" class="btn btn--primary profile-btn" id="nameBtn">
+                            <span id="nameText">Salvar nome</span>
+                            <svg id="nameSpinner" class="spinner" width="16" height="16" viewBox="0 0 16 16" fill="none" style="display:none">
+                                <circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="2" stroke-dasharray="19 19" stroke-linecap="round"/>
+                            </svg>
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Editar senha -->
+                <div class="profile-card">
+                    <div class="profile-card__header">
+                        <div class="profile-card__icon profile-card__icon--violet">
+                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                                <rect x="3" y="9" width="14" height="9" rx="2" stroke="currentColor" stroke-width="1.5"/>
+                                <path d="M7 9V7a3 3 0 016 0v2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                                <circle cx="10" cy="14" r="1.5" fill="currentColor"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <h2 class="profile-card__title">Senha</h2>
+                            <p class="profile-card__subtitle">Escolha uma senha segura</p>
+                        </div>
+                    </div>
+                    <form class="profile-form" id="passwordForm" novalidate>
+                        <div class="form-group" id="profilePasswordGroup">
+                            <label class="form-label" for="profilePassword">Nova senha</label>
+                            <div class="form-input-wrap">
+                                <input class="form-input form-input--plain" type="password" id="profilePassword" placeholder="Mínimo 6 caracteres" required>
+                                <button type="button" class="form-input-toggle" onclick="toggleProfilePass()" aria-label="Mostrar senha">
+                                    <svg id="profileEyeIcon" width="16" height="16" viewBox="0 0 18 18" fill="none">
+                                        <path d="M1 9s3-6 8-6 8 6 8 6-3 6-8 6-8-6-8-6z" stroke="currentColor" stroke-width="1.5"/>
+                                        <circle cx="9" cy="9" r="2.5" stroke="currentColor" stroke-width="1.5"/>
+                                    </svg>
+                                </button>
+                            </div>
+                            <span class="form-error" id="profilePasswordError"></span>
+                        </div>
+                        <div class="form-alert" id="passwordAlert" style="display:none"></div>
+                        <button type="submit" class="btn btn--primary profile-btn" id="passwordBtn">
+                            <span id="passwordText">Salvar senha</span>
+                            <svg id="passwordSpinner" class="spinner" width="16" height="16" viewBox="0 0 16 16" fill="none" style="display:none">
+                                <circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="2" stroke-dasharray="19 19" stroke-linecap="round"/>
+                            </svg>
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Zona de perigo -->
+            <div class="danger-zone">
+                <div class="danger-zone__header">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                        <path d="M10 2L2 17h16L10 2z" stroke="#DC2626" stroke-width="1.5" stroke-linejoin="round"/>
+                        <path d="M10 8v4M10 14h.01" stroke="#DC2626" stroke-width="1.5" stroke-linecap="round"/>
+                    </svg>
+                    <h3 class="danger-zone__title">Zona de perigo</h3>
+                </div>
+                <p class="danger-zone__desc">
+                    Ao excluir sua conta, todos os seus dados, avaliações e links serão removidos permanentemente.
+                    Esta ação não pode ser desfeita.
+                </p>
+                <button class="btn btn--danger" onclick="openModal('modalDeleteAccount')">
+                    Excluir minha conta
+                </button>
+            </div>
+        </section>
+    </main>
+
+    <!-- ── MODALS ── -->
+
+    <!-- Criar avaliação -->
+    <div class="modal-overlay" id="modalCreate" onclick="handleOverlayClick(event,'modalCreate')">
+        <div class="modal" role="dialog" aria-modal="true">
+            <div class="modal__header">
+                <h2 class="modal__title">Nova avaliação</h2>
+                <button class="modal__close" onclick="closeModal('modalCreate')" aria-label="Fechar">
+                    <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                        <path d="M4 4l10 10M14 4L4 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="modal__body">
+                <p class="modal__desc">Dê um nome para identificar esta avaliação. Três links serão gerados automaticamente.</p>
+                <div class="form-group" id="createNameGroup">
+                    <label class="form-label" for="createName">Nome da avaliação</label>
+                    <input class="form-input form-input--plain" type="text" id="createName" placeholder="Ex: Suporte — Semana 1" maxlength="80">
+                    <span class="form-error" id="createNameError"></span>
+                </div>
+                <div class="form-alert" id="createAlert" style="display:none"></div>
+            </div>
+            <div class="modal__footer">
+                <button class="btn btn--ghost" onclick="closeModal('modalCreate')">Cancelar</button>
+                <button class="btn btn--primary" id="createBtn" onclick="createLink()">
+                    <span id="createText">Criar</span>
+                    <svg id="createSpinner" class="spinner" width="16" height="16" viewBox="0 0 16 16" fill="none" style="display:none">
+                        <circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="2" stroke-dasharray="19 19" stroke-linecap="round"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Renomear avaliação -->
+    <div class="modal-overlay" id="modalRename" onclick="handleOverlayClick(event,'modalRename')">
+        <div class="modal" role="dialog" aria-modal="true">
+            <div class="modal__header">
+                <h2 class="modal__title">Renomear avaliação</h2>
+                <button class="modal__close" onclick="closeModal('modalRename')" aria-label="Fechar">
+                    <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                        <path d="M4 4l10 10M14 4L4 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="modal__body">
+                <div class="form-group" id="renameNameGroup">
+                    <label class="form-label" for="renameName">Novo nome</label>
+                    <input class="form-input form-input--plain" type="text" id="renameName" placeholder="Nome da avaliação" maxlength="80">
+                    <span class="form-error" id="renameNameError"></span>
+                </div>
+                <div class="form-alert" id="renameAlert" style="display:none"></div>
+            </div>
+            <div class="modal__footer">
+                <button class="btn btn--ghost" onclick="closeModal('modalRename')">Cancelar</button>
+                <button class="btn btn--primary" id="renameBtn" onclick="renameLink()">
+                    <span id="renameText">Salvar</span>
+                    <svg id="renameSpinner" class="spinner" width="16" height="16" viewBox="0 0 16 16" fill="none" style="display:none">
+                        <circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="2" stroke-dasharray="19 19" stroke-linecap="round"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirmar exclusão de avaliação -->
+    <div class="modal-overlay" id="modalDeleteLink" onclick="handleOverlayClick(event,'modalDeleteLink')">
+        <div class="modal modal--sm" role="dialog" aria-modal="true">
+            <div class="modal__header">
+                <h2 class="modal__title modal__title--danger">Excluir avaliação</h2>
+                <button class="modal__close" onclick="closeModal('modalDeleteLink')" aria-label="Fechar">
+                    <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                        <path d="M4 4l10 10M14 4L4 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="modal__body">
+                <p class="modal__desc">Tem certeza que deseja excluir <strong id="deleteLinkName"></strong>? Todos os links e resultados serão perdidos permanentemente.</p>
+            </div>
+            <div class="modal__footer">
+                <button class="btn btn--ghost" onclick="closeModal('modalDeleteLink')">Cancelar</button>
+                <button class="btn btn--danger" id="deleteLinkBtn" onclick="deleteLink()">
+                    <span id="deleteLinkText">Excluir</span>
+                    <svg id="deleteLinkSpinner" class="spinner" width="16" height="16" viewBox="0 0 16 16" fill="none" style="display:none">
+                        <circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="2" stroke-dasharray="19 19" stroke-linecap="round"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirmar exclusão de conta -->
+    <div class="modal-overlay" id="modalDeleteAccount" onclick="handleOverlayClick(event,'modalDeleteAccount')">
+        <div class="modal modal--sm" role="dialog" aria-modal="true">
+            <div class="modal__header">
+                <h2 class="modal__title modal__title--danger">Excluir conta</h2>
+                <button class="modal__close" onclick="closeModal('modalDeleteAccount')" aria-label="Fechar">
+                    <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                        <path d="M4 4l10 10M14 4L4 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="modal__body">
+                <p class="modal__desc">Esta ação é <strong>irreversível</strong>. Sua conta, todas as avaliações e links serão excluídos permanentemente.</p>
+                <div class="form-alert form-alert--error" style="display:flex; margin-top:12px">
+                    Você perderá todos os seus dados sem possibilidade de recuperação.
+                </div>
+            </div>
+            <div class="modal__footer">
+                <button class="btn btn--ghost" onclick="closeModal('modalDeleteAccount')">Cancelar</button>
+                <button class="btn btn--danger" id="deleteAccountBtn" onclick="deleteAccount()">
+                    <span id="deleteAccountText">Sim, excluir minha conta</span>
+                    <svg id="deleteAccountSpinner" class="spinner" width="16" height="16" viewBox="0 0 16 16" fill="none" style="display:none">
+                        <circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="2" stroke-dasharray="19 19" stroke-linecap="round"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <script>
+    // ── STATE ──────────────────────────────────────────────────────────────────
+    const user = JSON.parse(localStorage.getItem('maat_user') || 'null');
+    if (!user) window.location.href = '/login';
+
+    let links = [];
+    let pendingLinkId = null;
+
+    // ── INIT ───────────────────────────────────────────────────────────────────
+    document.getElementById('userName').textContent = user.name;
+    document.getElementById('userAvatar').textContent = user.name.charAt(0).toUpperCase();
+    document.getElementById('profileName').value = user.name;
+
+    loadLinks();
+
+    // ── TABS ───────────────────────────────────────────────────────────────────
+    function switchTab(tab) {
+        const isLinks = tab === 'links';
+        document.getElementById('panelLinks').classList.toggle('dash-panel--hidden', !isLinks);
+        document.getElementById('panelProfile').classList.toggle('dash-panel--hidden', isLinks);
+        document.getElementById('tabLinksBtn').classList.toggle('dash-tab--active', isLinks);
+        document.getElementById('tabProfileBtn').classList.toggle('dash-tab--active', !isLinks);
+    }
+
+    // ── LOAD LINKS ─────────────────────────────────────────────────────────────
+    async function loadLinks() {
+        showLoading(true);
+        try {
+            const res = await fetch(`/link/all/${user.id}`);
+            if (!res.ok) throw new Error();
+            links = await res.json();
+
+            const ratings = await Promise.all(
+                links.map(l => fetch(`/link/get-rating/${l.id}`).then(r => r.ok ? r.json() : { bad: 0, good: 0, great: 0 }))
+            );
+            links = links.map((l, i) => ({ ...l, rating: ratings[i] }));
+            renderLinks();
+        } catch {
+            showToast('Erro ao carregar avaliações.', 'error');
+        } finally {
+            showLoading(false);
+        }
+    }
+
+    // ── RENDER LINKS ───────────────────────────────────────────────────────────
+    function renderLinks() {
+        const grid = document.getElementById('linksGrid');
+        const empty = document.getElementById('emptyState');
+        const count = document.getElementById('linksCount');
+
+        count.textContent = links.length;
+
+        if (!links.length) {
+            grid.innerHTML = '';
+            empty.style.display = 'flex';
+            return;
+        }
+        empty.style.display = 'none';
+
+        grid.innerHTML = links.map(l => {
+            const r = l.rating || { bad: 0, good: 0, great: 0 };
+            const total = r.bad + r.good + r.great;
+            const pct = v => total ? Math.round(v / total * 100) : 0;
+            const origin = window.location.origin;
+
+            return `
+            <div class="eval-card" id="card-${l.id}">
+                <div class="eval-card__header">
+                    <div class="eval-card__name-wrap">
+                        <span class="eval-card__dot"></span>
+                        <span class="eval-card__name">${escHtml(l.name)}</span>
+                    </div>
+                    <div class="eval-card__actions">
+                        <button class="icon-btn icon-btn--edit" onclick="openRename(${l.id}, '${escJs(l.name)}')" title="Renomear">
+                            <svg width="15" height="15" viewBox="0 0 16 16" fill="none">
+                                <path d="M11 2.5a2 2 0 012.828 2.828L5.5 13.657 2 14l.343-3.5L11 2.5z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </button>
+                        <button class="icon-btn icon-btn--delete" onclick="openDeleteLink(${l.id}, '${escJs(l.name)}')" title="Excluir">
+                            <svg width="15" height="15" viewBox="0 0 16 16" fill="none">
+                                <path d="M2 4h12M5 4V2h6v2M6 7v5M10 7v5M3 4l1 9h8l1-9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="eval-card__links">
+                    ${linkRow('Ruim', 'bad', `${origin}/link/rating/${l.id}/bad`)}
+                    ${linkRow('Bom', 'good', `${origin}/link/rating/${l.id}/good`)}
+                    ${linkRow('Ótimo', 'great', `${origin}/link/rating/${l.id}/great`)}
+                </div>
+
+                <div class="eval-card__stats">
+                    <div class="eval-stat eval-stat--bad">
+                        <span class="eval-stat__num">${r.bad}</span>
+                        <span class="eval-stat__label">Ruim</span>
+                    </div>
+                    <div class="eval-stat eval-stat--good">
+                        <span class="eval-stat__num">${r.good}</span>
+                        <span class="eval-stat__label">Bom</span>
+                    </div>
+                    <div class="eval-stat eval-stat--great">
+                        <span class="eval-stat__num">${r.great}</span>
+                        <span class="eval-stat__label">Ótimo</span>
+                    </div>
+                    <div class="eval-stat eval-stat--total">
+                        <span class="eval-stat__num">${total}</span>
+                        <span class="eval-stat__label">Total</span>
+                    </div>
+                </div>
+
+                <div class="eval-card__bar">
+                    <div class="eval-bar-seg eval-bar-seg--bad"   style="width:${pct(r.bad)}%"  title="Ruim ${pct(r.bad)}%"></div>
+                    <div class="eval-bar-seg eval-bar-seg--good"  style="width:${pct(r.good)}%" title="Bom ${pct(r.good)}%"></div>
+                    <div class="eval-bar-seg eval-bar-seg--great" style="width:${pct(r.great)}%" title="Ótimo ${pct(r.great)}%"></div>
+                </div>
+                ${total ? `<p class="eval-card__total-hint">${total} resposta${total>1?'s':''} recebida${total>1?'s':''}</p>` : `<p class="eval-card__total-hint eval-card__total-hint--empty">Nenhuma resposta ainda</p>`}
+            </div>`;
+        }).join('');
+    }
+
+    function linkRow(label, type, url) {
+        return `
+        <div class="link-row link-row--${type}">
+            <span class="link-row__badge link-row__badge--${type}">${label}</span>
+            <span class="link-row__url">${url}</span>
+            <button class="link-row__copy" onclick="copyLink('${escJs(url)}')" title="Copiar link">
+                <svg width="15" height="15" viewBox="0 0 16 16" fill="none">
+                    <rect x="6" y="6" width="8" height="8" rx="1.5" stroke="currentColor" stroke-width="1.5"/>
+                    <path d="M4 10H3a1 1 0 01-1-1V3a1 1 0 011-1h6a1 1 0 011 1v1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
+            </button>
+        </div>`;
+    }
+
+    // ── CREATE ─────────────────────────────────────────────────────────────────
+    async function createLink() {
+        const name = document.getElementById('createName').value.trim();
+        clearFieldError('createName');
+        if (!name) { setFieldError('createName', 'Informe um nome para a avaliação.'); return; }
+
+        setBtnLoading('create', true);
+        try {
+            const res = await fetch('/link/create', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, user_id: user.id })
+            });
+            if (!res.ok) throw new Error();
+            closeModal('modalCreate');
+            document.getElementById('createName').value = '';
+            showToast('Avaliação criada!');
+            await loadLinks();
+        } catch {
+            showModalAlert('createAlert', 'Erro ao criar avaliação. Tente novamente.');
+        } finally {
+            setBtnLoading('create', false);
+        }
+    }
+
+    // ── RENAME ─────────────────────────────────────────────────────────────────
+    function openRename(id, currentName) {
+        pendingLinkId = id;
+        document.getElementById('renameName').value = currentName;
+        clearFieldError('renameName');
+        hideModalAlert('renameAlert');
+        openModal('modalRename');
+        setTimeout(() => document.getElementById('renameName').focus(), 80);
+    }
+
+    async function renameLink() {
+        const newName = document.getElementById('renameName').value.trim();
+        clearFieldError('renameName');
+        if (!newName) { setFieldError('renameName', 'Informe o novo nome.'); return; }
+
+        setBtnLoading('rename', true);
+        try {
+            const res = await fetch('/link/update', {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ link_id: pendingLinkId, new_name: newName })
+            });
+            if (!res.ok) throw new Error();
+            closeModal('modalRename');
+            showToast('Avaliação renomeada!');
+            await loadLinks();
+        } catch {
+            showModalAlert('renameAlert', 'Erro ao renomear. Tente novamente.');
+        } finally {
+            setBtnLoading('rename', false);
+        }
+    }
+
+    // ── DELETE LINK ────────────────────────────────────────────────────────────
+    function openDeleteLink(id, name) {
+        pendingLinkId = id;
+        document.getElementById('deleteLinkName').textContent = `"${name}"`;
+        openModal('modalDeleteLink');
+    }
+
+    async function deleteLink() {
+        setBtnLoading('deleteLink', true);
+        try {
+            const res = await fetch('/link/delete', {
+                method: 'DELETE',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ link_id: pendingLinkId })
+            });
+            if (!res.ok) throw new Error();
+            closeModal('modalDeleteLink');
+            showToast('Avaliação excluída.');
+            await loadLinks();
+        } catch {
+            closeModal('modalDeleteLink');
+            showToast('Erro ao excluir. Tente novamente.', 'error');
+        } finally {
+            setBtnLoading('deleteLink', false);
+        }
+    }
+
+    // ── PROFILE: UPDATE NAME ───────────────────────────────────────────────────
+    document.getElementById('nameForm').addEventListener('submit', async function (e) {
+        e.preventDefault();
+        const newName = document.getElementById('profileName').value.trim();
+        clearFieldError('profileName');
+        hideModalAlert('nameAlert');
+        if (!newName) { setFieldError('profileName', 'Informe o novo nome.'); return; }
+
+        setBtnLoading('name', true);
+        try {
+            const res = await fetch('/user/update', {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id: user.id, field: 'name', new_value: newName })
+            });
+            if (!res.ok) throw new Error();
+            user.name = newName;
+            localStorage.setItem('maat_user', JSON.stringify(user));
+            document.getElementById('userName').textContent = newName;
+            document.getElementById('userAvatar').textContent = newName.charAt(0).toUpperCase();
+            showProfileAlert('nameAlert', 'Nome atualizado com sucesso!', 'success');
+        } catch {
+            showProfileAlert('nameAlert', 'Erro ao atualizar. Tente novamente.');
+        } finally {
+            setBtnLoading('name', false);
+        }
+    });
+
+    // ── PROFILE: UPDATE PASSWORD ───────────────────────────────────────────────
+    document.getElementById('passwordForm').addEventListener('submit', async function (e) {
+        e.preventDefault();
+        const newPwd = document.getElementById('profilePassword').value;
+        clearFieldError('profilePassword');
+        hideModalAlert('passwordAlert');
+        if (!newPwd) { setFieldError('profilePassword', 'Informe a nova senha.'); return; }
+        if (newPwd.length < 6) { setFieldError('profilePassword', 'A senha deve ter no mínimo 6 caracteres.'); return; }
+
+        setBtnLoading('password', true);
+        try {
+            const res = await fetch('/user/update', {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id: user.id, field: 'password', new_value: newPwd })
+            });
+            if (!res.ok) throw new Error();
+            document.getElementById('profilePassword').value = '';
+            showProfileAlert('passwordAlert', 'Senha atualizada com sucesso!', 'success');
+        } catch {
+            showProfileAlert('passwordAlert', 'Erro ao atualizar. Tente novamente.');
+        } finally {
+            setBtnLoading('password', false);
+        }
+    });
+
+    // ── DELETE ACCOUNT ─────────────────────────────────────────────────────────
+    async function deleteAccount() {
+        setBtnLoading('deleteAccount', true);
+        try {
+            const res = await fetch('/user/delete', {
+                method: 'DELETE',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id: user.id })
+            });
+            if (!res.ok) throw new Error();
+            localStorage.removeItem('maat_user');
+            window.location.href = '/';
+        } catch {
+            closeModal('modalDeleteAccount');
+            showToast('Erro ao excluir conta. Tente novamente.', 'error');
+        } finally {
+            setBtnLoading('deleteAccount', false);
+        }
+    }
+
+    // ── LOGOUT ─────────────────────────────────────────────────────────────────
+    function logout() {
+        localStorage.removeItem('maat_user');
+        window.location.href = '/';
+    }
+
+    // ── CLIPBOARD ──────────────────────────────────────────────────────────────
+    function copyLink(url) {
+        navigator.clipboard.writeText(url)
+            .then(() => showToast('Link copiado!'))
+            .catch(() => {
+                const el = document.createElement('textarea');
+                el.value = url;
+                document.body.appendChild(el);
+                el.select();
+                document.execCommand('copy');
+                document.body.removeChild(el);
+                showToast('Link copiado!');
+            });
+    }
+
+    // ── MODAL HELPERS ──────────────────────────────────────────────────────────
+    function openModal(id) {
+        document.getElementById(id).classList.add('modal-overlay--open');
+        document.body.style.overflow = 'hidden';
+    }
+    function closeModal(id) {
+        document.getElementById(id).classList.remove('modal-overlay--open');
+        document.body.style.overflow = '';
+    }
+    function handleOverlayClick(e, id) {
+        if (e.target === e.currentTarget) closeModal(id);
+    }
+    document.addEventListener('keydown', e => {
+        if (e.key === 'Escape') {
+            document.querySelectorAll('.modal-overlay--open').forEach(m => {
+                m.classList.remove('modal-overlay--open');
+                document.body.style.overflow = '';
+            });
+        }
+    });
+
+    // ── TOAST ──────────────────────────────────────────────────────────────────
+    let toastTimer;
+    function showToast(msg, type = 'success') {
+        const el = document.getElementById('toast');
+        el.textContent = msg;
+        el.className = `toast toast--${type} toast--show`;
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => el.classList.remove('toast--show'), 2800);
+    }
+
+    // ── UI HELPERS ─────────────────────────────────────────────────────────────
+    function showLoading(show) {
+        document.getElementById('loadingState').style.display = show ? 'flex' : 'none';
+        document.getElementById('linksGrid').style.display = show ? 'none' : '';
+        document.getElementById('emptyState').style.display = show ? 'none' : '';
+    }
+
+    function setBtnLoading(key, loading) {
+        document.getElementById(key + 'Text').style.display = loading ? 'none' : 'inline';
+        document.getElementById(key + 'Spinner').style.display = loading ? 'block' : 'none';
+        document.getElementById(key + 'Btn').disabled = loading;
+    }
+
+    function setFieldError(field, msg) {
+        const input = document.getElementById(field);
+        const error = document.getElementById(field + 'Error');
+        if (input) input.classList.add('form-input--error');
+        if (error) error.textContent = msg;
+    }
+    function clearFieldError(field) {
+        const input = document.getElementById(field);
+        const error = document.getElementById(field + 'Error');
+        if (input) input.classList.remove('form-input--error');
+        if (error) error.textContent = '';
+    }
+
+    function showModalAlert(id, msg) {
+        const el = document.getElementById(id);
+        el.textContent = msg;
+        el.className = 'form-alert form-alert--error';
+        el.style.display = 'flex';
+    }
+    function hideModalAlert(id) {
+        document.getElementById(id).style.display = 'none';
+    }
+    function showProfileAlert(id, msg, type = 'error') {
+        const el = document.getElementById(id);
+        el.textContent = msg;
+        el.className = `form-alert form-alert--${type}`;
+        el.style.display = 'flex';
+    }
+
+    function toggleProfilePass() {
+        const input = document.getElementById('profilePassword');
+        const isHidden = input.type === 'password';
+        input.type = isHidden ? 'text' : 'password';
+        document.getElementById('profileEyeIcon').innerHTML = isHidden
+            ? '<path d="M2 2l14 14M7.5 7.7A2.5 2.5 0 0111.3 11M5.3 5.4C3.3 6.8 2 9 2 9s3 5 7 5a7 7 0 003.7-1.1M9 4c4 0 7 5 7 5s-.7 1.3-2 2.6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>'
+            : '<path d="M1 9s3-6 8-6 8 6 8 6-3 6-8 6-8-6-8-6z" stroke="currentColor" stroke-width="1.5"/><circle cx="9" cy="9" r="2.5" stroke="currentColor" stroke-width="1.5"/>';
+    }
+
+    function escHtml(str) {
+        return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+    function escJs(str) {
+        return str.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+    }
+    </script>
+</body>
+</html>
