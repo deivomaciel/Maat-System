@@ -3,7 +3,7 @@ from pydantic import BaseModel, constr, EmailStr, conint, conlist
 class UserCreate(BaseModel):
     name: constr(min_length=1, strip_whitespace=True)
     email: EmailStr
-    password: constr(min_length=6, max_length=8)
+    password: constr(min_length=6)
 
 class UserUpdate(BaseModel):
     id: conint()
@@ -15,4 +15,4 @@ class UserDelete(BaseModel):
 
 class UserLogin(BaseModel):
     email: EmailStr
-    password: constr(min_length=6, max_length=8)
+    password: constr(min_length=6)

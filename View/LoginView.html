@@ -172,9 +172,13 @@
                 });
 
                 const data = await res.json();
-
+                
                 if (!res.ok) {
-                    showAlert(data.detail || 'E-mail ou senha inválidos.');
+                    let serverMessage = data.detail[0]?.type || null
+
+                    serverMessage = serverMessage == 'string_too_short' ? 'A senha dever possuir no mínimo 6 dígitos' : serverMessage
+
+                    showAlert(serverMessage || 'E-mail ou senha inválidos.');
                     return;
                 }
 
