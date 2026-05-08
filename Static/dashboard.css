@@ -130,6 +130,8 @@
     display: flex;
     flex-direction: column;
     gap: 16px;
+    overflow: hidden;   /* garante que nada vaza para fora do card */
+    min-width: 0;       /* permite que o card comprima no grid */
     transition: box-shadow 0.2s, transform 0.2s;
 }
 .eval-card:hover { box-shadow: var(--shadow); transform: translateY(-2px); }
@@ -183,6 +185,7 @@
     padding: 8px 10px;
     border-radius: 8px;
     border: 1px solid transparent;
+    overflow: hidden;   /* impede que URL vaze para fora do card */
 }
 .link-row--bad   { background: #FEF2F2; border-color: #FECACA; }
 .link-row--good  { background: #FFFBEB; border-color: #FDE68A; }
@@ -203,6 +206,7 @@
 
 .link-row__url {
     flex: 1;
+    min-width: 0;       /* permite que o item flexbox comprima abaixo do tamanho da URL */
     font-size: 0.75rem;
     color: var(--text-muted);
     font-family: 'Menlo', 'Consolas', monospace;
@@ -543,6 +547,16 @@
         color: var(--primary);
         border-bottom: 2px solid var(--primary);
     }
+}
+
+/* ≤380px — telas muito pequenas: esconde URL (ilegível) e ajusta card */
+@media (max-width: 380px) {
+    .link-row__url { display: none; }
+    .link-row { justify-content: space-between; }
+    .eval-card { padding: 12px; gap: 12px; }
+    .eval-card__stats { gap: 6px; }
+    .eval-stat__num { font-size: 1rem; }
+    .dash-title { font-size: 1rem; }
 }
 
 /* ≤640px — ajustes extras para mobile pequeno */
